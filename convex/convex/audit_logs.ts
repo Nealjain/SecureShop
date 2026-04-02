@@ -2,7 +2,7 @@ import { query, mutation } from "./_generated/server";
 import { v } from "convex/values";
 
 export const create = mutation({
-  args: { data: v.string() },
+  args: v.any(),
   handler: async (ctx, args) => ctx.db.insert("audit_logs", args),
 });
 

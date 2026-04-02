@@ -24,10 +24,17 @@ export default defineSchema({
     record_hash: v.string(),
   }),
 
-  users:       defineTable({ data: v.string() }),
-  orders:      defineTable({ data: v.string() }),
-  sessions:    defineTable({ data: v.string() }),
-  token_vault: defineTable({ data: v.string() }),
-  audit_logs:  defineTable({ data: v.string() }),
+  users:       defineTable({ data: v.string(), record_hash: v.optional(v.string()) }),
+  orders:      defineTable({ data: v.string(), record_hash: v.optional(v.string()) }),
+  sessions:    defineTable({ data: v.string(), record_hash: v.optional(v.string()) }),
+  token_vault: defineTable({ data: v.string(), record_hash: v.optional(v.string()) }),
+  audit_logs:  defineTable({
+    data: v.string(),
+    user_id: v.optional(v.string()),
+    record_hash: v.optional(v.string()),
+    timestamp: v.optional(v.string()),
+    timestamp_hash: v.optional(v.string()),
+    action: v.optional(v.string()),
+  }),
 
 });
