@@ -10,7 +10,7 @@ class Settings(BaseSettings):
     JWT_EXPIRE_MINUTES: int = 60
     SESSION_TIMEOUT_MINUTES: int = 30
     AES_KEY_BASE64: str = ""
-    CORS_ORIGINS: str = "http://localhost:5173"
+    CORS_ORIGINS: str = "http://localhost:5173,https://secureshop-neal.vercel.app"
     ML_MODEL_PATH: str = "ml/fraud_model.pkl"
     ML_SCALER_PATH: str = "ml/scaler.pkl"
     OTP_ISSUER: str = "SecureECommerce"

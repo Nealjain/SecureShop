@@ -1,9 +1,12 @@
 import axios from 'axios'
 
 // In dev: Vite proxy handles /api → localhost:8000
-// In prod: vercel.json rewrites /api → backend URL
+// In prod (Vercel): backend is at /_/backend, so /api → /_/backend/api
+const isProd = import.meta.env.PROD
+const BASE = isProd ? '/_/backend' : ''
+
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: `${BASE}/api`,
   timeout: 30000,
 })
 
@@ -26,7 +29,7 @@ api.interceptors.response.use(
       if (token && !err.config._retried) {
         err.config._retried = true
         try {
-          const { data } = await axios.post('/api/auth/refresh', {}, {
+          const { data } = await axios.post(`${BASE}/api/auth/refresh`, {}, {
             headers: { Authorization: `Bearer ${token}` }
           })
           localStorage.setItem('token', data.access_token)

@@ -3,7 +3,7 @@ __pycache__/
 *.py[cod]
 *.pyo
 .env
-*.pkl
+# *.pkl (allowed for deployment)
 *.egg-info/
 dist/
 build/
@@ -37,6 +37,8 @@ Thumbs.db
 *.log
 npm-debug.log*
 
-# Misc
-*.pkl
-*.scaler
+# Archive data (large CSV files)
+archive/
+fix_images.py
+import_products.py
+sample_products_template.json
