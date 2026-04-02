@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: secureshop-backend
+    runtime: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: CONVEX_URL
+        value: https://acoustic-clownfish-225.convex.cloud
+      - key: JWT_SECRET_KEY
+        generateValue: true
+      - key: AES_KEY_BASE64
+        value: bb36btdYVfO7zs6tg9HQqP2yZbOyxr9nsK4HfhdkdXU=
+      - key: CORS_ORIGINS
+        value: https://secureshop-neal.vercel.app,http://localhost:5173
+      - key: SESSION_TIMEOUT_MINUTES
+        value: "120"
+      - key: JWT_EXPIRE_MINUTES
+        value: "120"

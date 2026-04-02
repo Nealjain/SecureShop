@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.env
+*.pkl
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+
+# Node
+node_modules/
+.pnp
+.pnp.js
+
+# Build output
+frontend/dist/
+frontend/.env.local
+
+# Convex
+convex/.env.local
+convex/node_modules/
+convex/convex/_generated/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Logs
+*.log
+npm-debug.log*
+
+# Misc
+*.pkl
+*.scaler
