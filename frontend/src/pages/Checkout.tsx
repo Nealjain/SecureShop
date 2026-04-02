@@ -123,8 +123,11 @@ export default function Checkout() {
       <div className="card mb-4">
         <h2 className="font-semibold mb-3">Order Summary</h2>
         {cart.map(i => (
-          <div key={i.product_id} className="flex justify-between text-sm py-1">
-            <span>{i.image} {i.name} × {i.qty}</span>
+          <div key={i.product_id} className="flex items-center justify-between text-sm py-2">
+            <div className="flex items-center gap-3">
+              <img src={i.image} alt={i.name} className="w-12 h-12 object-cover rounded bg-gray-100 flex-shrink-0" />
+              <span>{i.name} × {i.qty}</span>
+            </div>
             <span className="font-medium">₹{(i.price * i.qty).toLocaleString()}</span>
           </div>
         ))}

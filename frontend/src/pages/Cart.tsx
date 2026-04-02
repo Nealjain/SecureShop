@@ -30,7 +30,7 @@ export default function Cart() {
       <div className="space-y-3 mb-6">
         {cart.map(item => (
           <div key={item.product_id} className="card flex items-center gap-4">
-            <span className="text-3xl">{item.image}</span>
+            <img src={item.image} alt={item.name} className="w-20 h-20 object-cover rounded-md flex-shrink-0 bg-gray-100" />
             <div className="flex-1">
               <p className="font-medium">{item.name}</p>
               <p className="text-blue-600 font-semibold">₹{item.price.toLocaleString()}</p>
