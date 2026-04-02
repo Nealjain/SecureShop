@@ -91,3 +91,24 @@ async def login_user(db, email: str, password: str, ip: str, device_fp: str) -> 
                     ip=ip, device_fp=device_fp)
     return {"mfa_required": False, "access_token": token, "token_type": "bearer",
             "role": user["role"], "name": user["name"]}
+
+async def enable_mfa(db, user_id, otp_code: str):
+    user = await db.users.find_one({"_id": user_id})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    secret = decrypt_aes(user["otp_secret_encrypted"])
+    if verify_totp(secret, otp_code):
+        await db.users.update_one({"_id": user_id}, {"$set": {"mfa_enabled": True}})
+        return {"message": "MFA enabled successfully"}
+    raise HTTPException(status_code=400, detail="Invalid OTP code")
+
+async def verify_mfa(db, user_id, otp_code: str):
+    user = await db.users.find_one({"_id": user_id})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    secret = decrypt_aes(user["otp_secret_encrypted"])
+    if verify_totp(secret, otp_code):
+        return True
+    return False
