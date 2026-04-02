@@ -50,4 +50,35 @@ npm run dev
 | Rate Limiting | slowapi per-IP |
 | Payment | PCI DSS tokenization + Luhn validation |
 
+## Deployment (Vercel)
+
+The project is structured as a monorepo and is **Vercel-ready**. The root `vercel.json` coordinates the frontend build and the Python backend functions.
+
+### 1. Push to GitHub
+If you haven't already:
+```bash
+git add .
+git commit -m "initial vercel setup"
+git push origin main
+```
+
+### 2. Import to Vercel
+1. Go to [Vercel Dashboard](https://vercel.com/new).
+2. Select the repository.
+3. Keep the **Root Directory** as the repository root (not `frontend` or `backend`).
+4. Vercel will automatically detect the root `vercel.json`.
+
+### 3. Add Environment Variables
+In the Vercel UI, add:
+- `CONVEX_URL`: The URL of your production Convex instance.
+- `CONVEX_SITE_URL`: The Site URL of your production Convex instance.
+- `JWT_SECRET_KEY`: A random secure string for JWT tokens.
+- `AES_KEY_BASE64`: A base64 encoded AES key for card encryption.
+- `CORS_ORIGINS`: `https://YOUR_VERCEL_DOMAIN.vercel.app`
+
+### 4. Deploy
+Vercel will build the Vite frontend and deploy the Python backend as serverless functions.
+For the **Convex** backend, ensure you run `npx convex deploy` (or `npx convex dev` for preview) to set up your production database.
+
+---
 See `PRESENTATION.md` for full technical documentation.
