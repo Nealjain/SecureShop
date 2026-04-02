@@ -1,6 +1,7 @@
 import os
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from slowapi.errors import RateLimitExceeded
 from slowapi import _rate_limit_exceeded_handler
@@ -52,6 +53,16 @@ app.include_router(orders.router)
 app.include_router(admin.router)
 app.include_router(crypto_demo.router)
 app.include_router(profile_router)
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    import traceback
+    error_msg = "".join(traceback.format_exception(None, exc, exc.__traceback__))
+    print(f"❌ GLOBAL 500: {exc}\n{error_msg}")
+    return JSONResponse(
+        status_code=500,
+        content={"detail": "Internal Server Error — Check Vercel logs or contact admin", "error": str(exc)}
+    )
 
 @app.get("/")
 async def root():
