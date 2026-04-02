@@ -4,11 +4,13 @@ import numpy as np
 _model = None
 _scaler = None
 
+import os
 def _load():
     global _model, _scaler
     if _model is None:
-        _model = joblib.load("ml/fraud_model.pkl")
-        _scaler = joblib.load("ml/scaler.pkl")
+        base_path = os.path.dirname(os.path.abspath(__file__))
+        _model = joblib.load(os.path.join(base_path, "fraud_model.pkl"))
+        _scaler = joblib.load(os.path.join(base_path, "scaler.pkl"))
 
 def predict_fraud_ml(features: dict) -> dict:
     _load()

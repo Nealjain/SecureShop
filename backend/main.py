@@ -17,7 +17,9 @@ async def lifespan(app: FastAPI):
     # 1. Connect to Convex
     await connect_db()
     # 2. Train ML model if pkl files don't exist
-    if not os.path.exists("ml/fraud_model.pkl"):
+    base_path = os.path.dirname(os.path.abspath(__file__))
+    model_path = os.path.join(base_path, "ml", "fraud_model.pkl")
+    if not os.path.exists(model_path):
         from ml.train_model import train
         train()
     print("✅ Application ready — docs at http://localhost:8000/docs")

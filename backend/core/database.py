@@ -17,7 +17,7 @@ import json, httpx
 from datetime import datetime
 from core.config import settings
 
-CONVEX_URL = "https://acoustic-clownfish-225.convex.cloud"
+CONVEX_URL = settings.CONVEX_URL
 _client: httpx.AsyncClient = None
 
 # Tables that use single encrypted `data` column
