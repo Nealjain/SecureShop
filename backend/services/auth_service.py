@@ -97,8 +97,8 @@ async def enable_mfa(db, user_id, otp_code: str):
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
-    secret = decrypt_aes(user["otp_secret_encrypted"])
-    if verify_totp(secret, otp_code):
+    encrypted_secret = user["otp_secret_encrypted"]
+    if verify_totp(encrypted_secret, otp_code):
         await db.users.update_one({"_id": user_id}, {"$set": {"mfa_enabled": True}})
         return {"message": "MFA enabled successfully"}
     raise HTTPException(status_code=400, detail="Invalid OTP code")
@@ -108,8 +108,8 @@ async def verify_mfa(db, user_id, otp_code: str):
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     
-    secret = decrypt_aes(user["otp_secret_encrypted"])
-    if verify_totp(secret, otp_code):
+    encrypted_secret = user["otp_secret_encrypted"]
+    if verify_totp(encrypted_secret, otp_code):
         return True
     return False
 
@@ -119,9 +119,9 @@ async def fast_login_user(db, email: str, otp_code: str, ip: str, device_fp: str
         raise HTTPException(status_code=401, detail="Invalid credentials")
         
     user_id = user["_id"]
-    secret = decrypt_aes(user["otp_secret_encrypted"])
+    encrypted_secret = user["otp_secret_encrypted"]
     
-    if not verify_totp(secret, otp_code):
+    if not verify_totp(encrypted_secret, otp_code):
         await log_audit(db, "FAST_LOGIN_FAILED", user_id, "Invalid OTP code", ip=ip, device_fp=device_fp, risk_level="medium")
         raise HTTPException(status_code=401, detail="Invalid OTP code")
         
@@ -148,9 +148,9 @@ async def reset_password_otp(db, email: str, new_password: str, otp_code: str, i
         raise HTTPException(status_code=404, detail="User not found")
         
     user_id = user["_id"]
-    secret = decrypt_aes(user["otp_secret_encrypted"])
+    encrypted_secret = user["otp_secret_encrypted"]
     
-    if not verify_totp(secret, otp_code):
+    if not verify_totp(encrypted_secret, otp_code):
         await log_audit(db, "PASSWORD_RESET_FAILED", user_id, "Invalid OTP code during password reset", ip=ip, device_fp=device_fp, risk_level="high")
         raise HTTPException(status_code=401, detail="Invalid OTP code")
         
