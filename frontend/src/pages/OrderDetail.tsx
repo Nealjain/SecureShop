@@ -38,7 +38,7 @@ export default function OrderDetail() {
         { label: "IP + Device Fingerprint", color: "orange" },
       ]} />
 
-      <div className="grid grid-cols-2 gap-4 mt-4 mb-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 mb-4">
         <div className="card">
           <p className="text-xs text-gray-500 mb-1">Status</p>
           <span className={order.status === 'confirmed' ? 'badge-green' : 'badge-red'}>{order.status}</span>
@@ -53,7 +53,7 @@ export default function OrderDetail() {
       {verify && (
         <div className="card mb-4">
           <h2 className="font-semibold mb-3">🔐 Dual Integrity Verification</h2>
-          <div className="grid grid-cols-2 gap-3 text-sm">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm">
             <div className={`p-3 rounded-lg ${verify.record_hash_valid ? 'bg-green-50' : 'bg-red-50'}`}>
               <p className="font-medium text-xs text-gray-600 mb-1">Composite Record Hash</p>
               <p className="text-xs text-gray-500 mb-1">SHA-256 of all document fields</p>
@@ -79,7 +79,7 @@ export default function OrderDetail() {
       {order.fraud_result && (
         <div className="card mb-4">
           <h2 className="font-semibold mb-3">🤖 Fraud Detection — 3-Layer Engine</h2>
-          <div className="grid grid-cols-3 gap-3 text-sm mb-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm mb-3">
             <div className="bg-gray-50 p-2 rounded text-center">
               <p className="text-gray-500 text-xs">Rule Engine</p>
               <p className="font-bold text-lg">{order.fraud_result.rule_risk_score}</p>

@@ -72,7 +72,7 @@ export default function Checkout() {
           Order ID: <code className="bg-gray-100 px-1 rounded text-xs">{result.order_id}</code>
         </p>
 
-        <div className="grid grid-cols-2 gap-3 text-sm mb-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm mb-4">
           <div className="bg-gray-50 rounded-lg p-3">
             <p className="text-gray-500 text-xs">Total</p>
             <p className="font-bold text-blue-600">₹{result.total?.toLocaleString()}</p>
@@ -149,7 +149,7 @@ export default function Checkout() {
         {/* Delivery Address */}
         <div className="card">
           <h2 className="font-semibold mb-3">Delivery Address</h2>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
               <input className="input" required value={addr.full_name}
@@ -205,7 +205,7 @@ export default function Checkout() {
               <input className="input font-mono" placeholder="4111 1111 1111 1111" required
                 value={card.card_number} onChange={e => setCard({...card, card_number: e.target.value.replace(/\s/g,'')})} />
             </div>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               <div className="col-span-1">
                 <label className="block text-sm font-medium text-gray-700 mb-1">Expiry</label>
                 <input className="input" placeholder="MM/YY" required

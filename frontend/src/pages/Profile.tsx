@@ -77,7 +77,7 @@ export default function Profile() {
       <form onSubmit={save} className="space-y-4 mt-4">
         <div className="card">
           <h2 className="font-semibold mb-3">Saved Address</h2>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
               <input className="input" value={addr.full_name} onChange={e => setAddr({...addr, full_name: e.target.value})} placeholder="Your full name" />
@@ -117,7 +117,7 @@ export default function Profile() {
               <p className="font-medium">Current: {profile.saved_card.card_brand} {profile.saved_card.masked} · {profile.saved_card.expiry}</p>
             </div>
           )}
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div className="col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-1">Card Number</label>
               {/* Show masked if saved, allow new entry if blank */}
