@@ -26,3 +26,12 @@ class OTPVerify(BaseModel):
 
 class EnableMFA(BaseModel):
     otp_code: str
+
+class UserFastLogin(BaseModel):
+    email: EmailStr
+    otp_code: str
+
+class ResetPasswordOTP(BaseModel):
+    email: EmailStr
+    new_password: str
+    otp_code: str

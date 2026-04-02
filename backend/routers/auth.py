@@ -3,8 +3,8 @@ from core.database import get_db
 from core.dependencies import get_current_user
 from core.security import compute_device_fingerprint, verify_record_hash, get_totp_uri, decrypt_aes
 from core.middleware import limiter
-from models.user import UserCreate, UserLogin, OTPVerify, EnableMFA
-from services.auth_service import register_user, login_user
+from models.user import UserCreate, UserLogin, OTPVerify, EnableMFA, UserFastLogin, ResetPasswordOTP
+from services.auth_service import register_user, login_user, fast_login_user, reset_password_otp
 from services.session_service import invalidate_session
 from services.audit_service import log_audit
 
@@ -29,6 +29,20 @@ async def login(request: Request, body: UserLogin, db=Depends(get_db)):
     """Authenticate user — returns JWT or MFA challenge."""
     ip, device_fp = get_client_info(request)
     return await login_user(db, body.email, body.password, ip, device_fp)
+
+@router.post("/fast-login")
+@limiter.limit("5/minute")
+async def fast_login(request: Request, body: UserFastLogin, db=Depends(get_db)):
+    """Authenticate user with OTP instead of password."""
+    ip, device_fp = get_client_info(request)
+    return await fast_login_user(db, body.email, body.otp_code, ip, device_fp)
+
+@router.post("/reset-password-otp")
+@limiter.limit("3/minute")
+async def reset_password(request: Request, body: ResetPasswordOTP, db=Depends(get_db)):
+    """Reset password using TOTP code."""
+    ip, device_fp = get_client_info(request)
+    return await reset_password_otp(db, body.email, body.new_password, body.otp_code, ip, device_fp)
 
 @router.post("/logout")
 @limiter.limit("20/minute")

@@ -112,3 +112,50 @@ async def verify_mfa(db, user_id, otp_code: str):
     if verify_totp(secret, otp_code):
         return True
     return False
+
+async def fast_login_user(db, email: str, otp_code: str, ip: str, device_fp: str) -> dict:
+    user = await db.users.find_one({"email": email})
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+        
+    user_id = user["_id"]
+    secret = decrypt_aes(user["otp_secret_encrypted"])
+    
+    if not verify_totp(secret, otp_code):
+        await log_audit(db, "FAST_LOGIN_FAILED", user_id, "Invalid OTP code", ip=ip, device_fp=device_fp, risk_level="medium")
+        raise HTTPException(status_code=401, detail="Invalid OTP code")
+        
+    known_ips = list(set(user.get("known_ips", []) + [ip]))
+    known_devices = list(set(user.get("known_devices", []) + [device_fp]))
+    update_fields = {
+        "failed_login_attempts": 0,
+        "account_locked_until": None,
+        "last_login": datetime.utcnow().isoformat(),
+        "last_ip": ip,
+        "known_ips": known_ips,
+        "known_devices": known_devices,
+    }
+    await db.users.update_one({"_id": user_id}, {"$set": update_fields})
+    
+    token = create_access_token({"sub": email, "user_id": user_id, "role": user["role"]})
+    await create_session(db, user_id, token, ip, device_fp)
+    await log_audit(db, "FAST_LOGIN", user_id, f"Fast login via OTP from {ip}", ip=ip, device_fp=device_fp)
+    return {"mfa_required": False, "access_token": token, "token_type": "bearer", "role": user["role"], "name": user["name"]}
+
+async def reset_password_otp(db, email: str, new_password: str, otp_code: str, ip: str, device_fp: str) -> dict:
+    user = await db.users.find_one({"email": email})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+        
+    user_id = user["_id"]
+    secret = decrypt_aes(user["otp_secret_encrypted"])
+    
+    if not verify_totp(secret, otp_code):
+        await log_audit(db, "PASSWORD_RESET_FAILED", user_id, "Invalid OTP code during password reset", ip=ip, device_fp=device_fp, risk_level="high")
+        raise HTTPException(status_code=401, detail="Invalid OTP code")
+        
+    await db.users.update_one({"_id": user_id}, {"$set": {
+        "password_hash": hash_password(new_password)
+    }})
+    await log_audit(db, "PASSWORD_RESET", user_id, "Password reset successfully via OTP", ip=ip, device_fp=device_fp, risk_level="low")
+    return {"message": "Password changed successfully."}
