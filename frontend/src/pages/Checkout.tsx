@@ -40,6 +40,11 @@ export default function Checkout() {
   async function submit(e: React.FormEvent) {
     e.preventDefault()
     setError('')
+    // Explicit validation so Full Name is always checked first
+    if (!addr.full_name.trim()) { setError('Full Name is required'); return }
+    if (!addr.phone.trim()) { setError('Phone is required'); return }
+    if (!addr.address_line1.trim()) { setError('Address is required'); return }
+    if (!card.card_number.trim()) { setError('Card number is required'); return }
     setLoading(true)
     try {
       // Save profile if checkbox checked
