@@ -1,6 +1,16 @@
 interface CartItem { product_id: string; name: string; price: number; qty: number; image: string }
 interface User { email: string; role: string; name: string }
 
+type CartListener = () => void
+const listeners = new Set<CartListener>()
+
+export function subscribeCart(fn: CartListener) {
+  listeners.add(fn)
+  return () => listeners.delete(fn)
+}
+
+function notifyCart() { listeners.forEach(fn => fn()) }
+
 export function getUser(): User | null {
   try { return JSON.parse(localStorage.getItem('user') || 'null') } catch { return null }
 }
@@ -18,4 +28,5 @@ export function getCart(): CartItem[] {
 }
 export function saveCart(cart: CartItem[]) {
   localStorage.setItem('cart', JSON.stringify(cart))
+  notifyCart()
 }

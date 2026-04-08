@@ -120,18 +120,15 @@ export default function Profile() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div className="col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-1">Card Number</label>
-              {/* Show masked if saved, allow new entry if blank */}
-              <input className="input font-mono"
-                value={card.card_number ? `**** **** **** ${card.card_number.slice(-4)}` : ''}
-                readOnly={!!card.card_number}
-                placeholder="Enter new card number"
-                onClick={() => { if (card.card_number) setCard({...card, card_number: ''}) }}
+              <input className="input font-mono bg-gray-50" readOnly
+                value={card.card_number ? `**** **** **** ${card.card_number.slice(-4)}` : 'No card saved'}
               />
-              {card.card_number && (
-                <p className="text-xs text-gray-500 mt-1">Click to replace. Full number AES-256-GCM encrypted in DB.</p>
-              )}
+              <button type="button" className="text-xs text-blue-600 mt-1 hover:underline"
+                onClick={() => setCard({...card, card_number: ''})}>
+                Replace card
+              </button>
               {!card.card_number && (
-                <input className="input font-mono mt-2" placeholder="4111111111111111"
+                <input className="input font-mono mt-2" placeholder="Enter new card number"
                   onChange={e => setCard({...card, card_number: e.target.value.replace(/\s/g,'')})} />
               )}
             </div>

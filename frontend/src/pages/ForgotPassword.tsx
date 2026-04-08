@@ -47,8 +47,8 @@ export default function ForgotPassword() {
       <div className="card w-full max-w-md">
         <div className="text-center mb-6">
           <div className="mb-2 bg-blue-100 p-3 rounded-full text-blue-600 inline-block"><KeyRound size={28} /></div>
-          <h1 className="text-2xl font-bold">Change Password</h1>
-          <p className="text-gray-500 text-sm mt-1">Use your Google Authenticator to reset without emails</p>
+          <h1 className="text-2xl font-bold">Reset Password</h1>
+          <p className="text-gray-500 text-sm mt-1">Use your Authenticator app OTP to reset your password</p>
         </div>
 
         {error && <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg p-3 mb-4 text-sm">{error}</div>}

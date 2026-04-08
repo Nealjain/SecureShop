@@ -1,15 +1,22 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { ShieldCheck, LogOut, LayoutDashboard, ShoppingCart, User, ShoppingBag, Menu, X } from 'lucide-react'
 import { useAuth } from '../AuthContext'
-import { getCart } from '../store'
+import { getCart, subscribeCart } from '../store'
 import api from '../api'
 
 export default function Navbar() {
   const { user, logout } = useAuth()
-  const cart = getCart()
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
+  const [cartCount, setCartCount] = useState(() => getCart().reduce((s, i) => s + i.qty, 0))
+
+  useEffect(() => {
+    const unsub = subscribeCart(() => {
+      setCartCount(getCart().reduce((s, i) => s + i.qty, 0))
+    })
+    return unsub
+  }, [])
 
   async function handleLogout() {
     try { await api.post('/auth/logout') } catch {}
@@ -18,12 +25,9 @@ export default function Navbar() {
     setOpen(false)
   }
 
-  const cartCount = cart.reduce((s, i) => s + i.qty, 0)
-
   return (
     <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto px-4 flex items-center justify-between h-16">
-        {/* Logo */}
         <Link to="/" className="flex items-center gap-2 font-bold text-xl text-blue-600" onClick={() => setOpen(false)}>
           <ShieldCheck className="text-blue-600" />
           <span>SecureShop</span>
@@ -56,7 +60,7 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* Mobile right side */}
+        {/* Mobile right */}
         <div className="flex md:hidden items-center gap-3">
           {user && (
             <Link to="/cart" className="relative text-gray-600">

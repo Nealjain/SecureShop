@@ -1,9 +1,11 @@
+import { useState } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import { Shield, ShoppingBag, Lock, Zap, Cpu, Key } from 'lucide-react'
 import { useAuth } from '../AuthContext'
 
 export default function Landing() {
   const { user } = useAuth()
+  const [showDemo, setShowDemo] = useState(false)
 
   // Already logged in — go straight to shop
   if (user) return <Navigate to="/shop" replace />
@@ -81,14 +83,21 @@ export default function Landing() {
             <Link to="/register" className="btn-primary px-6 py-2.5">
               Create Account
             </Link>
-            <Link to="/login" state={{ from: { pathname: '/shop' } }}
+            <Link to="/shop"
               className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white font-medium px-6 py-2.5 rounded-lg transition-colors">
               <ShoppingBag size={18} /> Explore the Storefront
             </Link>
           </div>
-          <p className="text-gray-500 text-sm mt-4">
-            Demo: admin@secureshop.com / Admin@123 &nbsp;·&nbsp; neal@secureshop.com / Neal@123
-          </p>
+          <div className="mt-4">
+            <button onClick={() => setShowDemo(!showDemo)} className="text-gray-400 hover:text-gray-300 text-sm underline">
+              {showDemo ? 'Hide' : 'Show'} demo credentials
+            </button>
+            {showDemo && (
+              <p className="text-gray-400 text-sm mt-2">
+                admin@secureshop.com / Admin@123 &nbsp;·&nbsp; neal@secureshop.com / Neal@123
+              </p>
+            )}
+          </div>
         </div>
         <div className="absolute -right-20 -bottom-20 opacity-10 bg-blue-500 w-96 h-96 rounded-full blur-3xl" />
       </section>

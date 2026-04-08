@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { ShoppingBag, CheckCircle, AlertTriangle, Plus, ShoppingCart } from 'lucide-react'
 import api from '../api'
 import { getCart, saveCart } from '../store'
@@ -28,7 +28,10 @@ export default function Home() {
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
   const [added, setAdded] = useState<string | null>(null)
+  const [toast, setToast] = useState('')
   const navigate = useNavigate()
+  const location = useLocation()
+  const unauthorized = new URLSearchParams(location.search).get('reason') === 'unauthorized'
 
   useEffect(() => {
     api.get('/products')
@@ -47,7 +50,9 @@ export default function Home() {
     }
     saveCart(cart)
     setAdded(p.id)
+    setToast(`"${p.name}" added to cart`)
     setTimeout(() => setAdded(null), 1500)
+    setTimeout(() => setToast(''), 2500)
   }
 
   if (loading) {
@@ -60,6 +65,18 @@ export default function Home() {
 
   return (
     <div className="space-y-6">
+      {/* Toast */}
+      {toast && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-sm px-4 py-2 rounded-full shadow-lg z-50 flex items-center gap-2">
+          <CheckCircle size={14} className="text-green-400" /> {toast}
+        </div>
+      )}
+      {/* Unauthorized notice */}
+      {unauthorized && (
+        <div className="bg-yellow-50 border border-yellow-200 text-yellow-800 rounded-lg p-3 text-sm">
+          ⚠ You don't have permission to access that page.
+        </div>
+      )}
       <div className="flex items-center justify-between mb-8">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">

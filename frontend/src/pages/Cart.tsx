@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { Trash2 } from 'lucide-react'
 import { getCart, saveCart } from '../store'
 
 export default function Cart() {
@@ -31,8 +32,8 @@ export default function Cart() {
         {cart.map(item => (
           <div key={item.product_id} className="card flex items-center gap-4">
             <img src={item.image} alt={item.name} className="w-20 h-20 object-cover rounded-md flex-shrink-0 bg-gray-100" />
-            <div className="flex-1">
-              <p className="font-medium">{item.name}</p>
+            <div className="flex-1 min-w-0">
+              <p className="font-medium truncate" title={item.name}>{item.name}</p>
               <p className="text-blue-600 font-semibold">₹{item.price.toLocaleString()}</p>
             </div>
             <div className="flex items-center gap-2">
@@ -43,6 +44,9 @@ export default function Cart() {
                 className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 font-bold">+</button>
             </div>
             <p className="font-semibold w-24 text-right">₹{(item.price * item.qty).toLocaleString()}</p>
+            <button onClick={() => update(item.product_id, 0)} className="text-red-400 hover:text-red-600 ml-1" title="Remove">
+              <Trash2 size={16} />
+            </button>
           </div>
         ))}
       </div>
