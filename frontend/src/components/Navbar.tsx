@@ -50,12 +50,14 @@ export default function Navbar() {
                   <ShieldCheck size={14}/><span>Admin</span>
                 </Link>
               )}
-              <Link to="/cart" className="relative text-gray-600 hover:text-blue-600" aria-label="Cart">
-                <ShoppingCart size={20} />
-                {cartCount > 0 && (
-                  <span className="absolute -top-2 -right-2 bg-blue-600 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">{cartCount}</span>
-                )}
-              </Link>
+              {user.role !== 'admin' && (
+                <Link to="/cart" className="relative text-gray-600 hover:text-blue-600" aria-label="Cart">
+                  <ShoppingCart size={20} />
+                  {cartCount > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-blue-600 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">{cartCount}</span>
+                  )}
+                </Link>
+              )}
               <div className="flex items-center gap-2 border-l border-gray-200 pl-3 ml-1">
                 <Link to="/profile" aria-label="Profile" className="bg-gray-100 p-1.5 rounded-full text-gray-500 hover:bg-blue-50 hover:text-blue-600">
                   <User size={15}/>
@@ -77,7 +79,7 @@ export default function Navbar() {
 
         {/* Mobile right */}
         <div className="flex md:hidden items-center gap-3">
-          {user && (
+          {user && user.role !== 'admin' && (
             <Link to="/cart" className="relative text-gray-600" aria-label="Cart">
               <ShoppingCart size={20} />
               {cartCount > 0 && (

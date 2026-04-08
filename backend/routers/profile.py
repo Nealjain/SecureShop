@@ -27,6 +27,7 @@ class SavedCard(BaseModel):
 class ProfileUpdate(BaseModel):
     address: Optional[SavedAddress] = None
     saved_card: Optional[SavedCard] = None
+    delete_card: Optional[bool] = False
 
 
 @router.get("")
@@ -74,8 +75,9 @@ async def save_profile(request: Request, body: ProfileUpdate,
 
     if body.saved_card:
         card_data = body.saved_card.model_dump()
-        # Encrypt full card data
         update_fields["saved_card_encrypted"] = encrypt_aes(json.dumps(card_data))
+    elif body.delete_card:
+        update_fields["saved_card_encrypted"] = None
 
     if update_fields:
         await db.users.update_one({"_id": current_user["user_id"]}, {"$set": update_fields})
@@ -96,3 +98,20 @@ async def get_saved_card_raw(request: Request, current_user=Depends(get_current_
         return {"card": card_data}
     except Exception:
         return {"card": None}
+
+
+@router.get("/otp-uri")
+@limiter.limit("5/minute")
+async def get_otp_uri(request: Request, current_user=Depends(get_current_user), db=Depends(get_db)):
+    """Return TOTP provisioning URI for re-scanning QR code."""
+    user = await db.users.find_one({"_id": current_user["user_id"]})
+    if not user:
+        return {"otp_uri": ""}
+    from core.security import decrypt_aes, get_totp_uri
+    from core.config import settings
+    try:
+        secret = decrypt_aes(user["otp_secret_encrypted"])
+        uri = get_totp_uri(secret, user["email"], settings.OTP_ISSUER)
+        return {"otp_uri": uri}
+    except Exception:
+        return {"otp_uri": ""}
