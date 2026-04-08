@@ -18,8 +18,7 @@ export default function Landing() {
           <Shield size={14} /> CCS Project — Shah & Anchor Kutchhi Engineering College
         </div>
         <h1 className="text-5xl font-extrabold text-gray-900 mb-6 tracking-tight">
-          Secure Shopping,{' '}
-          <span className="text-blue-600">Zero Trust</span> Architecture.
+          Secure Shopping, <span className="text-blue-600">Zero Trust</span> Architecture.
         </h1>
         <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-10 leading-relaxed">
           Every byte encrypted. Every record hashed. Every transaction fraud-checked.
@@ -66,7 +65,9 @@ export default function Landing() {
                 <span className="badge-blue font-bold">{c.co}</span>
                 <span className="font-semibold">{c.title}</span>
               </div>
-              {c.items.map(i => <p key={i} className="text-sm text-gray-600">• {i}</p>)}
+              <ul className="list-disc list-inside space-y-0.5">
+                {c.items.map(i => <li key={i} className="text-sm text-gray-600">{i}</li>)}
+              </ul>
             </div>
           ))}
         </div>

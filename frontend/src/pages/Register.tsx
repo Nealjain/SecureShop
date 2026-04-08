@@ -117,19 +117,20 @@ export default function Register() {
         <form onSubmit={submit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-            <input className="input" required value={form.name}
-              onChange={e => setForm({ ...form, name: e.target.value })} placeholder="Your name" />
+            <input className="input" required autoComplete="name" aria-label="Full name"
+              value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} placeholder="Your name" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-            <input className="input" type="email" required value={form.email}
-              onChange={e => setForm({ ...form, email: e.target.value })} placeholder="you@example.com" />
+            <input className="input" type="email" required autoComplete="email" aria-label="Email address"
+              value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} placeholder="you@example.com" />
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
             <div className="relative">
-              <input className="input pr-10" type={showPw ? 'text' : 'password'} required value={form.password}
-                onChange={e => setForm({ ...form, password: e.target.value })} placeholder="Min 8 characters" />
+              <input className="input pr-10" type={showPw ? 'text' : 'password'} required
+                autoComplete="new-password" aria-label="Password"
+                value={form.password} onChange={e => setForm({ ...form, password: e.target.value })} placeholder="Min 8 characters" />
               <button type="button" onClick={() => setShowPw(!showPw)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
                 {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
@@ -142,8 +143,9 @@ export default function Register() {
             <div className="relative">
               <input
                 className={`input pr-10 ${passwordMatch ? 'border-green-400 focus:ring-green-400' : passwordMismatch ? 'border-red-400 focus:ring-red-400' : ''}`}
-                type={showConfirm ? 'text' : 'password'} required value={form.confirm}
-                onChange={e => setForm({ ...form, confirm: e.target.value })} placeholder="Re-enter password" />
+                type={showConfirm ? 'text' : 'password'} required
+                autoComplete="new-password" aria-label="Confirm password"
+                value={form.confirm} onChange={e => setForm({ ...form, confirm: e.target.value })} placeholder="Re-enter password" />
               <div className="absolute right-3 top-1/2 -translate-y-1/2 flex items-center gap-1">
                 {passwordMatch && <Check size={14} className="text-green-500" />}
                 {passwordMismatch && <X size={14} className="text-red-500" />}

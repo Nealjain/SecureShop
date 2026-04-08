@@ -56,18 +56,20 @@ export default function ForgotPassword() {
         <form onSubmit={submit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Email address</label>
-            <input className="input" type="email" required value={form.email}
-              onChange={e => setForm({...form, email: e.target.value})} placeholder="you@example.com" />
+            <input className="input" type="email" required autoComplete="email" aria-label="Email address"
+              value={form.email} onChange={e => setForm({...form, email: e.target.value})} placeholder="you@example.com" />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
             <div className="relative">
               <input className="input pr-10" type={showPw ? 'text' : 'password'} required
+                autoComplete="new-password" aria-label="New password"
                 value={form.new_password} onChange={e => setForm({ ...form, new_password: e.target.value })}
                 placeholder="••••••••" />
               <button type="button" onClick={() => setShowPw(!showPw)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                aria-label={showPw ? 'Hide password' : 'Show password'}>
                 {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
@@ -76,18 +78,23 @@ export default function ForgotPassword() {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Authenticator Code (OTP)</label>
             <input className="input font-mono tracking-widest text-lg" required maxLength={6}
+              autoComplete="one-time-code" aria-label="Authenticator OTP code"
               value={form.otp} onChange={e => setForm({ ...form, otp: e.target.value.replace(/\D/g, '') })}
               placeholder="000000" />
           </div>
 
           <button type="submit" className="btn-primary w-full" disabled={loading || form.otp.length !== 6}>
-            {loading ? 'Verifying & Changing...' : 'Change Password Securely'}
+            {loading ? 'Verifying...' : 'Reset Password'}
           </button>
         </form>
 
-        <Link to="/login" className="flex items-center gap-1 text-sm text-gray-500 hover:text-blue-600 mt-4 justify-center">
-          <ArrowLeft size={14} /> Back to Login
-        </Link>
+        <div className="flex justify-center gap-4 mt-4 text-sm text-gray-500">
+          <Link to="/login" className="flex items-center gap-1 hover:text-blue-600">
+            <ArrowLeft size={14} /> Back to Login
+          </Link>
+          <span className="text-gray-300">|</span>
+          <Link to="/" className="hover:text-blue-600">Home</Link>
+        </div>
 
         <SecurityBadge title="🔒 Reset Security" items={[
           { label: "PBKDF2-HMAC-SHA256 rehash", color: "blue" },

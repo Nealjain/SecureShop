@@ -60,7 +60,7 @@ export default function Login() {
         <form onSubmit={submit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-            <input className="input" type="email" required autoComplete="email"
+            <input className="input" type="email" required autoComplete="email" aria-label="Email address"
               value={form.email} onChange={e => setForm({ ...form, email: e.target.value })}
               placeholder="you@example.com" />
           </div>
@@ -69,10 +69,12 @@ export default function Login() {
             <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
             <div className="relative">
               <input className="input pr-10" type={showPw ? 'text' : 'password'} required
+                autoComplete="current-password" aria-label="Password"
                 value={form.password} onChange={e => setForm({ ...form, password: e.target.value })}
                 placeholder="••••••••" />
               <button type="button" onClick={() => setShowPw(!showPw)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                aria-label={showPw ? 'Hide password' : 'Show password'}>
                 {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
               </button>
             </div>
