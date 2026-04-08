@@ -9,16 +9,26 @@ async def rehash():
     
     collections = ['users', 'products', 'orders', 'sessions', 'token_vault', 'audit_logs']
     for coll in collections:
-        cursor = await getattr(db, coll).find({})
+        cursor = getattr(db, coll).find({})
         items = await cursor.to_list(length=None)
         print(f"Migrating {coll}: {len(items)} items")
         for item in items:
             c_id = item.pop('_id')
-            item.pop('_creationTime', None) # Let's ignore this from updates since it's managed by Convex
+            item.pop('_creationTime', None)
             
+            # Recalculate hash on current fields
             new_hash = compute_record_hash(item)
+            
             try:
-                await getattr(db, coll)._mutation("update", {"id": c_id, "fields": {"record_hash": new_hash}})
+                if getattr(db, coll)._encrypted:
+                    # Need to resave entire encrypted blob
+                    from core.database import _encrypt, _clean
+                    merged = item.copy()
+                    merged["record_hash"] = new_hash
+                    await getattr(db, coll)._m("update", {"id": c_id, "data": _encrypt(_clean(merged))})
+                else:
+                    # Just update the record_hash field directly
+                    await getattr(db, coll)._m("update", {"id": c_id, "fields": {"record_hash": new_hash}})
             except Exception as e:
                 print(f"Error updating {c_id} in {coll}: {e}")
 
