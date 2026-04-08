@@ -23,6 +23,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = useCallback((u: User, t: string) => {
     localStorage.setItem('user', JSON.stringify(u))
     localStorage.setItem('token', t)
+    localStorage.removeItem('cart')  // clear stale cart on every login
     setUser(u)
     setToken(t)
   }, [])
