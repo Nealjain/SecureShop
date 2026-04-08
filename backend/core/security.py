@@ -7,9 +7,10 @@ from cryptography.hazmat.primitives import hashes
 from jose import jwt, JWTError
 import pyotp
 from dotenv import load_dotenv
+from pathlib import Path
 
-# Load variables from .env into os.environ
-load_dotenv()
+# Load variables from .env into os.environ — resolve relative to this file's location
+load_dotenv(dotenv_path=Path(__file__).resolve().parent.parent / ".env")
 
 # ── AES-256-GCM ─────────────────────────────────────────────
 

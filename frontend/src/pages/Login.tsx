@@ -6,9 +6,8 @@ import { useAuth } from '../AuthContext'
 import SecurityBadge from '../components/SecurityBadge'
 
 export default function Login() {
-  const [form, setForm] = useState({ email: '', password: '', otp: '' })
+  const [form, setForm] = useState({ email: '', password: '' })
   const [showPw, setShowPw] = useState(false)
-  const [fastLogin, setFastLogin] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [showDemo, setShowDemo] = useState(false)
@@ -23,24 +22,17 @@ export default function Login() {
     setError('')
     setLoading(true)
     try {
-      if (fastLogin) {
-        const { data } = await api.post('/auth/fast-login', { email: form.email, otp_code: form.otp })
+      const { data } = await api.post('/auth/login', { email: form.email, password: form.password })
+      if (data.mfa_required) {
+        navigate('/verify-otp', { state: { partial_token: data.partial_token } })
+      } else {
         login({ email: form.email, role: data.role, name: data.name }, data.access_token)
         navigate(from, { replace: true })
-      } else {
-        const { data } = await api.post('/auth/login', { email: form.email, password: form.password })
-        if (data.mfa_required) {
-          navigate('/verify-otp', { state: { partial_token: data.partial_token } })
-        } else {
-          login({ email: form.email, role: data.role, name: data.name }, data.access_token)
-          navigate(from, { replace: true })
-        }
       }
     } catch (err: any) {
       const detail = err.response?.data?.detail || 'Login failed'
       if (err.response?.status === 423) {
-        const until = new Date(Date.now() + 15 * 60 * 1000)
-        setLockoutUntil(until)
+        setLockoutUntil(new Date(Date.now() + 15 * 60 * 1000))
         setError('Account locked due to too many failed attempts.')
       } else {
         setError(detail)
@@ -55,16 +47,13 @@ export default function Login() {
       <div className="card w-full max-w-md">
         <div className="text-center mb-6 flex flex-col items-center">
           <div className="mb-2 bg-blue-100 p-3 rounded-full text-blue-600"><Lock size={32} /></div>
-          <h1 className="text-2xl font-bold text-gray-900">{fastLogin ? 'Fast Login' : 'Sign in'}</h1>
-          <p className="text-gray-500 text-sm mt-1">Secure E-Commerce — CCS Project</p>
+          <h1 className="text-2xl font-bold text-gray-900">Sign in</h1>
         </div>
 
         {error && (
           <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg p-3 mb-4 text-sm">
             {error}
-            {lockoutUntil && (
-              <p className="mt-1 font-medium">Try again after 15 minutes.</p>
-            )}
+            {lockoutUntil && <p className="mt-1 font-medium">Try again after 15 minutes.</p>}
           </div>
         )}
 
@@ -75,34 +64,22 @@ export default function Login() {
               value={form.email} onChange={e => setForm({ ...form, email: e.target.value })}
               placeholder="you@example.com" />
           </div>
-          
-          {fastLogin ? (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Authenticator Code (OTP)</label>
-              <input className="input font-mono tracking-widest text-lg" required maxLength={6}
-                value={form.otp} onChange={e => setForm({ ...form, otp: e.target.value.replace(/\D/g, '') })}
-                placeholder="000000" />
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+            <div className="relative">
+              <input className="input pr-10" type={showPw ? 'text' : 'password'} required
+                value={form.password} onChange={e => setForm({ ...form, password: e.target.value })}
+                placeholder="••••••••" />
+              <button type="button" onClick={() => setShowPw(!showPw)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
             </div>
-          ) : (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-              <div className="relative">
-                <input className="input pr-10" type={showPw ? 'text' : 'password'} required
-                  value={form.password} onChange={e => setForm({ ...form, password: e.target.value })}
-                  placeholder="••••••••" />
-                <button type="button" onClick={() => setShowPw(!showPw)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
-                  {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
-                </button>
-              </div>
-            </div>
-          )}
-          
-          <div className="flex justify-between items-center text-sm">
-            <button type="button" onClick={() => setFastLogin(!fastLogin)} className="text-blue-600 hover:underline font-medium">
-              {fastLogin ? 'Use password instead' : 'Fast login with OTP'}
-            </button>
-            {!fastLogin && <Link to="/forgot-password" className="text-blue-600 hover:underline">Forgot password?</Link>}
+          </div>
+
+          <div className="flex justify-end text-sm">
+            <Link to="/forgot-password" className="text-blue-600 hover:underline">Forgot password?</Link>
           </div>
 
           <button type="submit" className="btn-primary w-full flex justify-center items-center h-10" disabled={loading}>
