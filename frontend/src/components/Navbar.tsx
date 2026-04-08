@@ -12,11 +12,13 @@ export default function Navbar() {
   const [cartCount, setCartCount] = useState(() => getCart().reduce((s, i) => s + i.qty, 0))
 
   useEffect(() => {
+    // Reset cart count when user changes (prevents cross-session leak)
+    setCartCount(getCart().reduce((s, i) => s + i.qty, 0))
     const unsub = subscribeCart(() => {
       setCartCount(getCart().reduce((s, i) => s + i.qty, 0))
     })
     return () => { unsub() }
-  }, [])
+  }, [user])
 
   async function handleLogout() {
     try { await api.post('/auth/logout') } catch {}
@@ -34,23 +36,36 @@ export default function Navbar() {
         </Link>
 
         {/* Desktop nav */}
-        <div className="hidden md:flex items-center gap-4">
+        <div className="hidden md:flex items-center gap-3">
           {user ? (
             <>
-              <Link to="/shop" className="text-gray-600 hover:text-blue-600 text-sm font-medium flex items-center gap-1"><ShoppingBag size={14}/><span>Store</span></Link>
-              <Link to="/orders" className="text-gray-600 hover:text-blue-600 text-sm font-medium flex items-center gap-1"><LayoutDashboard size={14}/><span>Orders</span></Link>
+              <Link to="/shop" className="text-gray-600 hover:text-blue-600 text-sm font-medium flex items-center gap-1">
+                <ShoppingBag size={14}/><span>Store</span>
+              </Link>
+              <Link to="/orders" className="text-gray-600 hover:text-blue-600 text-sm font-medium flex items-center gap-1">
+                <LayoutDashboard size={14}/><span>Orders</span>
+              </Link>
               {user.role === 'admin' && (
-                <Link to="/admin" className="text-gray-600 hover:text-blue-600 text-sm font-medium flex items-center gap-1"><ShieldCheck size={14}/><span>Admin</span></Link>
+                <Link to="/admin" className="text-gray-600 hover:text-blue-600 text-sm font-medium flex items-center gap-1">
+                  <ShieldCheck size={14}/><span>Admin</span>
+                </Link>
               )}
-              <Link to="/cart" className="relative text-gray-600 hover:text-blue-600">
+              <Link to="/cart" className="relative text-gray-600 hover:text-blue-600" aria-label="Cart">
                 <ShoppingCart size={20} />
                 {cartCount > 0 && (
                   <span className="absolute -top-2 -right-2 bg-blue-600 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">{cartCount}</span>
                 )}
               </Link>
-              <Link to="/profile" className="bg-gray-100 p-2 rounded-full text-gray-500 hover:bg-blue-50 hover:text-blue-600"><User size={16}/></Link>
-              <span className="text-sm font-medium text-gray-700">{user.name}</span>
-              <button onClick={handleLogout} className="btn-secondary text-sm py-1.5 px-3 flex items-center gap-1"><LogOut size={14}/> Logout</button>
+              <div className="flex items-center gap-2 border-l border-gray-200 pl-3 ml-1">
+                <Link to="/profile" aria-label="Profile" className="bg-gray-100 p-1.5 rounded-full text-gray-500 hover:bg-blue-50 hover:text-blue-600">
+                  <User size={15}/>
+                </Link>
+                <span className="text-sm font-medium text-gray-700">{user.name}</span>
+                <span className="text-gray-300">|</span>
+                <button onClick={handleLogout} className="text-sm text-gray-500 hover:text-red-600 flex items-center gap-1 transition-colors">
+                  <LogOut size={14}/> Logout
+                </button>
+              </div>
             </>
           ) : (
             <>
@@ -63,14 +78,14 @@ export default function Navbar() {
         {/* Mobile right */}
         <div className="flex md:hidden items-center gap-3">
           {user && (
-            <Link to="/cart" className="relative text-gray-600">
+            <Link to="/cart" className="relative text-gray-600" aria-label="Cart">
               <ShoppingCart size={20} />
               {cartCount > 0 && (
                 <span className="absolute -top-2 -right-2 bg-blue-600 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">{cartCount}</span>
               )}
             </Link>
           )}
-          <button onClick={() => setOpen(!open)} className="text-gray-600 p-1">
+          <button onClick={() => setOpen(!open)} className="text-gray-600 p-1" aria-label="Menu">
             {open ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>

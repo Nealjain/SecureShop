@@ -11,19 +11,30 @@ interface Order {
 export default function Orders() {
   const [orders, setOrders] = useState<Order[]>([])
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
   const navigate = useNavigate()
 
   useEffect(() => {
-    api.get('/orders').then(r => setOrders(r.data)).finally(() => setLoading(false))
+    api.get('/orders')
+      .then(r => setOrders(r.data))
+      .catch(() => setError(true))
+      .finally(() => setLoading(false))
   }, [])
 
-  if (loading) return <div className="text-center py-20 text-gray-400">Loading orders...</div>
+  if (loading) return <div className="text-center py-20 text-gray-400 animate-pulse">Loading orders...</div>
+  if (error) return (
+    <div className="text-center py-20">
+      <div className="text-5xl mb-4">⚠️</div>
+      <h2 className="text-lg font-semibold text-gray-700 mb-2">Could not load orders</h2>
+      <button onClick={() => window.location.reload()} className="btn-secondary mt-2">Retry</button>
+    </div>
+  )
 
   if (orders.length === 0) return (
     <div className="text-center py-20">
       <div className="text-6xl mb-4">📦</div>
       <h2 className="text-xl font-semibold text-gray-700 mb-2">No orders yet</h2>
-      <button onClick={() => navigate('/')} className="btn-primary mt-2">Start Shopping</button>
+      <button onClick={() => navigate('/shop')} className="btn-primary mt-2">Start Shopping</button>
     </div>
   )
 
