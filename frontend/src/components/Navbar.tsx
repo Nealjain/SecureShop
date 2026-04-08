@@ -15,7 +15,7 @@ export default function Navbar() {
     const unsub = subscribeCart(() => {
       setCartCount(getCart().reduce((s, i) => s + i.qty, 0))
     })
-    return unsub
+    return () => { unsub() }
   }, [])
 
   async function handleLogout() {
