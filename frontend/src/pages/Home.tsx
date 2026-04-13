@@ -1,6 +1,6 @@
 import { useEffect, useState, useMemo } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
-import { ShoppingBag, CheckCircle, AlertTriangle, Plus, ShoppingCart, Search } from 'lucide-react'
+import { CheckCircle, AlertTriangle, Plus, ShoppingCart, Search } from 'lucide-react'
 import api from '../api'
 import { getCart, saveCart } from '../store'
 import SecurityBadge from '../components/SecurityBadge'
@@ -10,16 +10,19 @@ interface Product {
   description: string; stock: number; image: string; integrity_status: string
 }
 
-const CATEGORY_EMOJI: Record<string, string> = {
-  'Electronics': '📱', 'Accessories': '👜', 'Bags': '👝', 'Beauty': '💄',
-  'Home & Living': '🏠', 'Jewelry': '💍', 'Kids': '🧸', "Men's Fashion": '👔',
-  'Shoes': '👟', "Women's Fashion": '👗', 'Storage': '💾'
+const CATEGORY_LABELS: Record<string, string> = {
+  'Electronics': 'Electronics', 'Accessories': 'Accessories', 'Bags': 'Bags',
+  'Beauty': 'Beauty', 'Home & Living': 'Home', 'Jewelry': 'Jewelry',
+  'Kids': 'Kids', "Men's Fashion": "Men's", 'Shoes': 'Shoes',
+  "Women's Fashion": "Women's", 'Storage': 'Storage'
 }
 
 function ProductImage({ src, category, name }: { src: string; category: string; name: string }) {
   const [failed, setFailed] = useState(false)
-  const emoji = CATEGORY_EMOJI[category] || '📦'
-  if (!src || failed) return <div className="text-6xl">{emoji}</div>
+  const label = CATEGORY_LABELS[category] || category
+  if (!src || failed) return (
+    <div className="w-full h-full flex items-center justify-center bg-gray-100 text-gray-400 text-sm font-medium">{label}</div>
+  )
   return <img src={src} alt={name} className="w-full h-full object-cover group-hover:scale-105 transition-transform"
     onError={() => setFailed(true)} loading="lazy" />
 }
@@ -88,8 +91,8 @@ export default function Home() {
     <div className="space-y-4">
       {/* Toast */}
       {toast && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-sm px-4 py-2 rounded-full shadow-lg z-50 flex items-center gap-2 whitespace-nowrap">
-          <CheckCircle size={14} className="text-green-400" /> {toast}
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-sm px-4 py-2 rounded-full shadow-lg z-50 whitespace-nowrap">
+          {toast}
         </div>
       )}
 
@@ -102,9 +105,7 @@ export default function Home() {
 
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-            <ShoppingBag className="text-blue-600" size={26} /> Secure Marketplace
-          </h1>
+          <h1 className="text-2xl font-bold text-gray-900">Store</h1>
           <p className="text-gray-500 text-xs mt-0.5">SHA-256 verified · AES-256-GCM decrypted</p>
         </div>
         <button onClick={() => navigate('/cart')} className="btn-primary flex items-center gap-2">

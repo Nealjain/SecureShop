@@ -98,9 +98,8 @@ export default function Checkout() {
   if (result) return (
     <div className="max-w-lg mx-auto">
       <div className="card text-center">
-        <div className="text-5xl mb-3">{result.fraud_result?.is_fraudulent ? '⚠️' : '✅'}</div>
         <h2 className="text-xl font-bold mb-1">
-          {result.fraud_result?.is_fraudulent ? 'Order Flagged for Review' : 'Order Confirmed!'}
+          {result.fraud_result?.is_fraudulent ? 'Order Flagged for Review' : 'Order Confirmed'}
         </h2>
         <p className="text-gray-500 text-sm mb-4">
           Order ID: <code className="bg-gray-100 px-1 rounded text-xs">{result.order_id}</code>

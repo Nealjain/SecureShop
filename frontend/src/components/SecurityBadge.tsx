@@ -11,7 +11,7 @@ const colors: Record<string, string> = {
   red:    "bg-red-50 border-red-200 text-red-700",
 }
 
-export default function SecurityBadge({ items, title = "🔒 Security" }: Props) {
+export default function SecurityBadge({ items, title = "Security" }: Props) {
   return (
     <div className="rounded-lg border bg-gray-50 border-gray-200 p-3 mt-4">
       <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">{title}</p>

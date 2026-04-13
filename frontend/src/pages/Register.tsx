@@ -69,24 +69,23 @@ export default function Register() {
   if (result) return (
     <div className="min-h-[80vh] flex items-center justify-center">
       <div className="card w-full max-w-md text-center">
-        <div className="text-4xl mb-3">✅</div>
         <h2 className="text-xl font-bold mb-2">Registration Successful</h2>
         <p className="text-gray-600 text-sm mb-4">Welcome, {result.name}!</p>
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-left text-xs mb-4">
-          <p className="font-semibold text-blue-800 mb-2">🔐 MFA Setup (Optional but Recommended)</p>
+          <p className="font-semibold text-blue-800 mb-2">MFA Setup (Optional but Recommended)</p>
           <p className="text-blue-700 mb-3">Scan this QR code with Google Authenticator or Authy:</p>
           <div className="flex justify-center mb-3 bg-white p-3 rounded-lg">
             <QRCodeSVG value={result.otp_uri} size={160} />
           </div>
-          <p className="text-blue-700 mb-1">Can't scan? Manual key:</p>
+          <p className="text-blue-700 mb-1">Manual key:</p>
           <code className="block bg-blue-100 rounded p-1 break-all text-blue-900 font-mono">{result.otp_secret}</code>
-          <p className="text-blue-600 mt-2">Enable MFA from your Profile page after logging in.</p>
+          <p className="text-blue-600 mt-2">You can also enable MFA from your Profile page after logging in.</p>
         </div>
         <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-left text-xs mb-4">
-          <p className="font-semibold text-green-800 mb-1">✅ Security Applied</p>
-          <p className="text-green-700">• Password: PBKDF2-HMAC-SHA256 (310,000 iterations)</p>
-          <p className="text-green-700">• OTP secret: AES-256-GCM encrypted</p>
-          <p className="text-green-700">• Record hash: SHA-256 composite stored</p>
+          <p className="font-semibold text-green-800 mb-1">Security Applied</p>
+          <p className="text-green-700">Password: PBKDF2-HMAC-SHA256 (310,000 iterations)</p>
+          <p className="text-green-700">OTP secret: AES-256-GCM encrypted</p>
+          <p className="text-green-700">Record hash: SHA-256 composite stored</p>
         </div>
         <button onClick={() => navigate('/login')} className="btn-secondary w-full mb-2">Go to Login Manually</button>
         <button onClick={async () => {
@@ -108,8 +107,7 @@ export default function Register() {
     <div className="min-h-[80vh] flex items-center justify-center">
       <div className="card w-full max-w-md">
         <div className="text-center mb-6">
-          <div className="text-4xl mb-2">👤</div>
-          <h1 className="text-2xl font-bold">Create account</h1>
+          <h1 className="text-2xl font-bold">Create Account</h1>
         </div>
 
         {error && <div className="bg-red-50 border border-red-200 text-red-700 rounded-lg p-3 mb-4 text-sm">{error}</div>}

@@ -22,29 +22,27 @@ export default function Orders() {
   }, [])
 
   if (loading) return <div className="text-center py-20 text-gray-400 animate-pulse">Loading orders...</div>
+
   if (error) return (
     <div className="text-center py-20">
-      <div className="text-5xl mb-4">⚠️</div>
-      <h2 className="text-lg font-semibold text-gray-700 mb-2">Could not load orders</h2>
-      <button onClick={() => window.location.reload()} className="btn-secondary mt-2">Retry</button>
+      <p className="text-gray-500 mb-4">Could not load orders.</p>
+      <button onClick={() => window.location.reload()} className="btn-secondary">Retry</button>
     </div>
   )
 
   if (orders.length === 0) return (
     <div className="text-center py-20">
-      <div className="text-6xl mb-4">📦</div>
-      <h2 className="text-xl font-semibold text-gray-700 mb-2">No orders yet</h2>
-      <button onClick={() => navigate('/shop')} className="btn-primary mt-2">Start Shopping</button>
+      <p className="text-gray-500 mb-4">No orders yet.</p>
+      <button onClick={() => navigate('/shop')} className="btn-primary">Start Shopping</button>
     </div>
   )
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-2">My Orders</h1>
-      <SecurityBadge title="🔒 Order Security" items={[
+      <h1 className="text-2xl font-bold mb-4">My Orders</h1>
+      <SecurityBadge title="Order Security" items={[
         { label: "SHA-256 Integrity Hash", color: "blue" },
         { label: "Composite Record Hash", color: "blue" },
-        { label: "Tamper Detection on Read", color: "green" },
         { label: "PCI DSS Tokenization", color: "green" },
         { label: "Isolation Forest Fraud ML", color: "purple" },
       ]} />
@@ -59,13 +57,13 @@ export default function Orders() {
                 <p className="text-xs text-gray-400 mt-0.5">{o.items?.length || 0} item(s) · Card ****{o.card_last4}</p>
               </div>
               <div className="text-right">
-                <p className="text-xl font-bold text-blue-600">₹{o.total?.toLocaleString()}</p>
+                <p className="text-xl font-bold text-blue-600 whitespace-nowrap">Rs. {o.total?.toLocaleString()}</p>
                 <div className="flex gap-2 mt-1 justify-end flex-wrap">
                   <span className={o.status === 'confirmed' ? 'badge-green' : o.status === 'flagged' ? 'badge-red' : 'badge-yellow'}>
                     {o.status}
                   </span>
-                  <span className={o.integrity_status === 'ok' ? 'badge-green' : 'badge-red'} title="SHA-256 record hash">
-                    {o.integrity_status === 'ok' ? '✓ Hash OK' : '⚠ Tampered'}
+                  <span className={o.integrity_status === 'ok' ? 'badge-green' : 'badge-red'}>
+                    {o.integrity_status === 'ok' ? 'Hash OK' : 'Tampered'}
                   </span>
                 </div>
               </div>
@@ -74,7 +72,6 @@ export default function Orders() {
               <div className="mt-2 pt-2 border-t flex gap-4 text-xs text-gray-500 flex-wrap">
                 <span>Risk: <strong className={`capitalize ${o.fraud_result.risk_level === 'low' ? 'text-green-600' : o.fraud_result.risk_level === 'medium' ? 'text-yellow-600' : 'text-red-600'}`}>{o.fraud_result.risk_level}</strong></span>
                 <span>ML Score: <strong>{o.fraud_result.ml_risk_score}</strong></span>
-                <span>Combined: <strong>{o.fraud_result.combined_risk_score}</strong></span>
                 {o.fraud_result.flags?.length > 0 && <span className="text-red-500">{o.fraud_result.flags.length} flag(s)</span>}
               </div>
             )}

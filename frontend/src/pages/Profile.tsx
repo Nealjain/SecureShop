@@ -53,7 +53,7 @@ export default function Profile() {
   }
 
   const roleBadge = me?.role === 'admin'
-    ? <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-blue-100 text-blue-800">👑 Admin</span>
+    ? <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-blue-100 text-blue-800">Admin</span>
     : <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-green-100 text-green-800">Customer</span>
 
   return (
@@ -71,7 +71,7 @@ export default function Profile() {
               <p className="text-sm text-gray-500">{me.email}</p>
               <div className="flex gap-2 mt-1 flex-wrap">
                 {roleBadge}
-                {me.mfa_enabled && <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-blue-100 text-blue-800">🔑 MFA On</span>}
+                {me.mfa_enabled && <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold bg-blue-100 text-blue-800">MFA On</span>}
                 <span className={me.integrity_status === 'ok' ? 'badge-green' : 'badge-red'}>
                   {me.integrity_status === 'ok' ? '✓ Record Hash OK' : '⚠ Tampered'}
                 </span>
@@ -81,14 +81,14 @@ export default function Profile() {
         </div>
       )}
 
-      <SecurityBadge title="🔒 Profile Security" items={[
+      <SecurityBadge title="Profile Security" items={[
         { label: "Address: AES-256-GCM encrypted", color: "blue" },
         { label: "Card: AES-256-GCM encrypted", color: "blue" },
         { label: "SHA-256 record hash", color: "green" },
         { label: "Convex DB: single data column", color: "purple" },
       ]} />
 
-      {saved && <div className="bg-green-50 border border-green-200 text-green-700 rounded-lg p-3 mt-4 text-sm">✅ Profile saved securely</div>}
+      {saved && <div className="bg-green-50 border border-green-200 text-green-700 rounded-lg p-3 mt-4 text-sm">Profile saved successfully.</div>}
 
       <form onSubmit={save} className="space-y-4 mt-4">
         {/* Address */}
@@ -173,7 +173,7 @@ export default function Profile() {
         <div className="card">
           <h2 className="font-semibold mb-1">Two-Factor Authentication (TOTP)</h2>
           <p className="text-xs text-gray-500 mb-3">
-            {me?.mfa_enabled ? '🔑 MFA is enabled on your account.' : 'MFA is not yet enabled. Scan the QR code with Google Authenticator or Authy.'}
+            {me?.mfa_enabled ? 'MFA is enabled on your account.' : 'MFA is not yet enabled. Scan the QR code with Google Authenticator or Authy.'}
           </p>
           <button type="button" onClick={getOtpQR} className="btn-secondary text-sm py-1.5 px-3">
             {me?.mfa_enabled ? 'Re-scan QR Code' : 'Set Up MFA'}
